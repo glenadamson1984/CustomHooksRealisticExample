@@ -7,7 +7,7 @@ import useHttp from "../src/hooks/use-http";
 function App() {
   const [tasks, setTasks] = useState([]);
 
-  const transformTasks = useCallback((taskObj) => {
+  const transformTasks = (taskObj) => {
     const loadedTasks = [];
 
     for (const taskKey in taskObj) {
@@ -15,14 +15,17 @@ function App() {
     }
 
     setTasks(loadedTasks);
-  }, []);
+  };
 
-  const { isLoading, error, sendRequest: fetchTasks } = useHttp(transformTasks);
+  const { isLoading, error, sendRequest: fetchTasks } = useHttp();
 
   useEffect(() => {
-    fetchTasks({
-      url: "https://http-request-c835b-default-rtdb.firebaseio.com/tasks.json",
-    });
+    fetchTasks(
+      {
+        url: "https://http-request-c835b-default-rtdb.firebaseio.com/tasks.json",
+      },
+      transformTasks
+    );
   }, [fetchTasks]);
 
   const taskAddHandler = (task) => {
